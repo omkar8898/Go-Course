@@ -1,0 +1,68 @@
+{{template "base" .}}
+
+{{define "content"}}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                {{$res := index .Data "reservation"}}
+                <h1 class="text-center mt-4">Make Reservation</h1>
+                <p><strong>Reservation Details</strong><br>
+                Room: {{$res.Room.RoomName}}<br>
+                Arrival: {{index .StringMap "start_date"}}<br>
+                Departure: {{index .StringMap "end_date"}}
+                </p>
+                {{/*                needs-validation*/}}
+                <form action="/make-reservation" method="post" novalidate class="">
+                    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+                    <input type="hidden" name="start_date" value="{{index .StringMap "start_date"}}">
+                    <input type="hidden" name="end_date" value="{{index .StringMap "end_date"}}">
+                    <input type="hidden" name="room_id" value="{{$res.RoomID}}">
+
+                    <div class="form-group mt-5">
+                        <label for="first_name">First Name:</label>
+                        {{with .Form.Errors.Get "first_name"}}
+                            <label class="text-danger">{{.}}</label>
+                        {{end}}
+                        <input type="text" class="form-control {{with .Form.Errors.Get "first_name"}}is-invalid{{end}}"
+                               value="{{$res.FirstName}}" name="first_name" id="first_name" required autocomplete="off">
+                    </div>
+
+                    <div class="form-group mt-5">
+                        <label for="last_name">Last Name:</label>
+                        {{with .Form.Errors.Get "last_name"}}
+                            <label class="text-danger">{{.}}</label>
+                        {{end}}
+                        <input type="text" class="form-control {{with .Form.Errors.Get "last_name"}}is-invalid{{end}}"
+                               name="last_name" id="last_name" required
+                               value="{{$res.LastName}}" autocomplete="off">
+                    </div>
+
+                    <div class="form-group mt-5">
+                        <label for="phone_number">Phone Number: </label>
+                        {{with .Form.Errors.Get "phone_number"}}
+                            <label class="text-danger">{{.}}</label>
+                        {{end}}
+                        <input type="text"
+                               class="form-control {{with .Form.Errors.Get "phone_number"}}is-invalid{{end}}"
+                               name="phone_number" id="phone_number" required
+                               value="{{$res.Phone}}" autocomplete="off">
+                    </div>
+
+                    <div class="form-group mt-5">
+                        <label for="email">Email:</label>
+                        {{with .Form.Errors.Get "email"}}
+                            <label class="text-danger">{{.}}</label>
+                        {{end}}
+                        <input type="email" class="form-control {{with .Form.Errors.Get "email"}}is-invalid{{end}}"
+                               name="email" id="email" required
+                               value="{{$res.Email}}" autocomplete="off">
+                    </div>
+
+                    <hr>
+                    <button type="submit" class="btn btn-primary">Make Reservation</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{{end}}
